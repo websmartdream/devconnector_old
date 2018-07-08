@@ -16,7 +16,6 @@ const User = require('../../models/User');
 // @access  Public
 router.post('/register', async (req, res) => {
   const { errors, isValid } = validateRegisterInput(req.body);
-
   // Check validation
   if (!isValid) return res.status(400).json(errors);
 
@@ -41,7 +40,6 @@ router.post('/register', async (req, res) => {
   newUser.password = await bcrypt.hash(newUser.password, salt);
 
   const savedUser = await newUser.save();
-
   res.json(savedUser);
 });
 
@@ -51,7 +49,6 @@ router.post('/register', async (req, res) => {
 // @access  Public
 router.post('/login', async (req, res) => {
   const { errors, isValid } = validateLoginInput(req.body);
-
   // Check validation
   if (!isValid) return res.status(400).json(errors);
 
@@ -69,7 +66,6 @@ router.post('/login', async (req, res) => {
   };
 
   const token = await jwt.sign(payload, keys.JWTKey, { expiresIn: 3600 });
-
   res.json({
     message: 'Logged in successfully',
     token: 'Bearer ' + token

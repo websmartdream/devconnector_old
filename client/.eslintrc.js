@@ -39,6 +39,6 @@ module.exports = {
 			imports: 'never',
 			exports: 'never',
 			functions: 'never'
-		}]
+		}],
 	}
 }

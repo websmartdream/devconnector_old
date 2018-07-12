@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+import classnames from 'classnames';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { loginUser } from '../../actions/authActions';
+import TextFieldGroup from '../common/textFieldGroup';
 
 
 class Login extends Component {
@@ -8,8 +12,19 @@ class Login extends Component {
 
     this.state = {
       email: '',
-      password: ''
+      password: '',
+      errors: {}
     };
+  }
+
+  componentDidMount = () => {
+    if (this.props.auth.isAuthenticated) this.props.history.push('/dashboard');
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    if (props.auth.isAuthenticated) props.history.push('/dashboard');
+    if (props.errors) return { errors: props.errors };
+    return null;
   }
 
   onChange = (e) => {
@@ -24,10 +39,12 @@ class Login extends Component {
       password: this.state.password
     }
 
-    axios.post('/api/users/register', user);
+    this.props.loginUser(user);
   }
 
   render() {
+    const { errors } = this.state;
+
     return (
       <div className="login">
         <div className="container">
@@ -37,27 +54,26 @@ class Login extends Component {
               <p className="lead text-center">
                 Sign in to your DevConnector account
               </p>
-              <form onSubmit={this.onSubmit}>
-                <div className="form-group">
-                  <input
-                    type="email"
-                    className="form-control form-control-lg"
-                    placeholder="Email Address"
-                    name="email"
-                    value={this.state.email}
-                    onChange={this.onChange}
-                  />
-                </div>
-                <div className="form-group">
-                  <input
-                    type="password"
-                    className="form-control form-control-lg"
-                    placeholder="Password"
-                    name="password"
-                    value={this.state.password}
-                    onChange={this.onChange}
-                  />
-                </div>
+              <form noValidate onSubmit={this.onSubmit}>
+
+                <TextFieldGroup
+                  type="email"
+                  placeholder="Email address"
+                  name="email"
+                  value={this.state.email}
+                  onChange={this.onChange}
+                  error={errors.email}
+                />
+
+                <TextFieldGroup
+                  type="password"
+                  placeholder="Password"
+                  name="password"
+                  value={this.state.password}
+                  onChange={this.onChange}
+                  error={errors.password}
+                />
+
                 <input type="submit" className="btn btn-info btn-block mt-4" />
               </form>
             </div>
@@ -69,4 +85,17 @@ class Login extends Component {
 }
 
 
-export default Login;
+Login.propTypes = {
+  loginUser: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired,
+  errors: PropTypes.object.isRequired
+};
+
+
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+  errors: state.errors
+});
+
+
+export default connect(mapStateToProps, { loginUser })(Login);

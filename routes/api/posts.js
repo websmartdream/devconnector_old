@@ -42,7 +42,7 @@ router.post('/', passport.authenticate('jwt', { session: false }), async (req, r
   const newPost = new Post({
     text: req.body.text,
     name: req.body.name,
-    avatar: req.body.name,
+    avatar: req.body.avatar,
     user: req.user.id
   });
 

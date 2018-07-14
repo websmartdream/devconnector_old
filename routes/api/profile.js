@@ -228,7 +228,7 @@ router.delete('/education/:id', passport.authenticate('jwt', { session: false })
 // @access  Private
 router.delete('/', passport.authenticate('jwt', { session: false }), async (req, res) => {
   await Profile.findOneAndRemove({ user: req.user.id });
-  await User.findOneAndRemove({ id: req.user.id });
+  await User.findOneAndRemove({ _id: req.user.id });
 
   res.json({ success: true });
 });

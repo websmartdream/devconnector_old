@@ -1,4 +1,5 @@
-module.exports = {
-  mongoURI: 'mongodb://megyerimarton:megyerimarton1@ds125241.mlab.com:25241/merncourse',
-  JWTKey: 'secret'
-};
+if (process.env.NODE_ENV === 'production') {
+  module.exports = require('./keys_prod');
+} else {
+  module.exports = require('./keys_dev');
+}
